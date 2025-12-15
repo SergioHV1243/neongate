@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NeonGate // Acceso Simulado</title>
+  <style>
+    :root {
+      --bg: #0a0f1f;
+      --card: #0f1633;
+      --neon: #5ef2ff;
+      --accent: #8b7bff;
+      --text: #e7ecff;
+      --muted: #9aa3ff;
+      --danger: #ff6b6b;
+    }
+    * { box-sizing: border-box; font-family: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, 'Helvetica Neue', Arial; }
+    body {
+      margin: 0; min-height: 100vh; display: grid; place-items: center;
+      background: radial-gradient(1200px 600px at 10% 10%, #141b3f, var(--bg)); color: var(--text);
+    }
+    .card {
+      width: min(420px, 92vw);
+      background: linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.01)), var(--card);
+      border: 1px solid rgba(94,242,255,.25);
+      border-radius: 18px;
+      padding: 24px 22px 22px;
+      box-shadow: 0 0 0 1px rgba(94,242,255,.15), 0 20px 60px rgba(0,0,0,.6);
+    }
+    .title {
+      display: flex; align-items: center; gap: 10px; margin-bottom: 14px;
+    }
+    .dot { width: 10px; height: 10px; border-radius: 50%; background: var(--neon); box-shadow: 0 0 12px var(--neon); }
+    h1 { font-size: 1.15rem; margin: 0; letter-spacing: .3px; }
+    p.sub { margin: 6px 0 18px; color: var(--muted); font-size: .9rem; }
+
+    label { display: block; font-size: .8rem; color: var(--muted); margin-bottom: 6px; }
+    input {
+      width: 100%; padding: 12px 14px; margin-bottom: 14px;
+      background: #0b1230; color: var(--text);
+      border: 1px solid rgba(139,123,255,.35); border-radius: 12px;
+      outline: none;
+    }
+    input:focus { box-shadow: 0 0 0 2px rgba(94,242,255,.35); }
+
+    .row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    button {
+      width: 100%; padding: 12px 14px; border-radius: 12px; border: 0; cursor: pointer;
+      background: linear-gradient(90deg, var(--neon), var(--accent)); color: #05121a; font-weight: 700;
+      box-shadow: 0 10px 30px rgba(94,242,255,.35);
+    }
+    button.secondary {
+      background: transparent; color: var(--text); border: 1px dashed rgba(94,242,255,.4);
+      box-shadow: none;
+    }
+
+    .console {
+      margin-top: 16px; padding: 12px; border-radius: 12px;
+      background: #060b1f; border: 1px solid rgba(94,242,255,.25);
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: .78rem; color: #b9f8ff;
+      height: 120px; overflow: auto;
+    }
+    .warn { margin-top: 10px; font-size: .75rem; color: #ffd6d6; }
+    .badge {
+      display: inline-block; padding: 4px 8px; border-radius: 999px; font-size: .7rem; margin-left: 6px;
+      background: rgba(94,242,255,.15); color: var(--neon); border: 1px solid rgba(94,242,255,.35);
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="title">
+      <span class="dot"></span>
+      <h1>NeonGate — Acceso Seguro <span class="badge">SCI‑FI</span></h1>
+    </div>
+    <p class="sub">Interfaz profesional de ciencia ficción. <strong>Simulación local</strong> para pruebas.</p>
+
+    <label for="phone">Número de Teléfono</label>
+    <input id="phone" type="tel" placeholder="+502 0000 0000" />
+
+    <label for="pass">Contraseña</label>
+    <input id="pass" type="password" placeholder="••••••••" />
+
+    <div class="row">
+      <button onclick="simulate()">Iniciar Sesión</button>
+      <button class="secondary" onclick="clearLog()">Limpiar</button>
+    </div>
+
+    <div class="console" id="log"></div>
+
+    <div class="warn">⚠️ Esto es una <strong>simulación</strong>. No guarda ni transmite información.</div>
+  </div>
+
+  <!-- INTERFAZ DESTINO -->
+  <div class="card" id="dashboard" style="display:none">
+    <div class="title">
+      <span class="dot"></span>
+      <h1>NeonGate — Núcleo Operativo <span class="badge">DASH</span></h1>
+    </div>
+    <p class="sub">Panel de control posterior al acceso.</p>
+    <div class="console" id="dashlog"></div>
+    <div class="row" style="margin-top:10px">
+      <button onclick="backToLogin()">Cerrar sesión</button>
+      <button class="secondary" onclick="showVault()">Ver Bóveda Local</button>
+    </div>
+  </div>
+
+  <script>
+    const log = document.getElementById('log');
+    const dash = document.getElementById('dashboard');
+    const dashlog = document.getElementById('dashlog');
+    function line(t){ log.innerHTML += `> ${t}<br>`; log.scrollTop = log.scrollHeight; }
+    function mask(s){ return s ? s.slice(0,2) + '••••' + s.slice(-2) : '—'; }
+
+    function simulate(){
+      const phone = document.getElementById('phone').value;
+      const pass = document.getElementById('pass').value;
+      log.innerHTML = '';
+      line('Inicializando enlace hiper-seguro…');
+      setTimeout(()=> line('Cifrando campos (AES-Ω)…'), 400);
+      setTimeout(()=> line(`ID detectado: ${mask(phone)}`), 800);
+      setTimeout(()=> line('Clave cuántica verificada ✓'), 1200);
+      setTimeout(()=> line('Transmitiendo a nodo orbital [SIMULADO]…'), 1600);
+      setTimeout(()=> {
+        saveLocal(phone, pass);
+        line('Acceso concedido — Ingresando al sistema…');
+        setTimeout(()=> goDashboard(phone), 700);
+      }, 2100);
+    }
+    function clearLog(){ log.innerHTML = ''; }
+
+    function hashLite(s){
+      let h = 0; for(let i=0;i<s.length;i++){ h = Math.imul(31,h) + s.charCodeAt(i) | 0; }
+      return ('00000000' + (h>>>0).toString(16)).slice(-8);
+    }
+    function saveLocal(phone, pass){
+      const vault = JSON.parse(localStorage.getItem('neongate_vault')||'[]');
+      vault.push({
+        t: new Date().toISOString(),
+        phone_masked: mask(phone),
+        pass_hash: hashLite(pass)
+      });
+      localStorage.setItem('neongate_vault', JSON.stringify(vault));
+    }
+    function showVault(){
+      const vault = JSON.parse(localStorage.getItem('neongate_vault')||'[]');
+      log.innerHTML = '';
+      if(!vault.length){ line('Bóveda vacía.'); return; }
+      line('— BÓVEDA LOCAL (SIMULADA) —');
+      vault.forEach((r,i)=>{ line(`#${i+1} | ${r.t} | ID ${r.phone_masked} | hash ${r.pass_hash}`); });
+    }
+    function wipeVault(){
+      localStorage.removeItem('neongate_vault');
+      log.innerHTML = '';
+      line('Bóveda local vaciada.');
+    }
+
+    function goDashboard(phone){
+      document.querySelector('.card').style.display='none';
+      dash.style.display='block';
+      dashlog.innerHTML='';
+      dashlog.innerHTML += `> Operador autenticado: ${mask(phone)}<br>`;
+      dashlog.innerHTML += '> Sistemas en línea ✓<br>';
+      dashlog.innerHTML += '> Enlace orbital estable ✓<br>';
+    }
+    function backToLogin(){
+      dash.style.display='none';
+      document.querySelector('.card').style.display='block';
+      clearLog();
+    }
+  </script>
+</body>
+</html>
